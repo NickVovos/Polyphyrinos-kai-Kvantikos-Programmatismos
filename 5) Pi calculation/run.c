@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
-#include <time.h>
 
 double calculate_pi_sequential(long n) {
     double pi = 0.0;
@@ -14,17 +13,13 @@ double calculate_pi_sequential(long n) {
 
 double calculate_pi_parallel(long n) {
     double pi = 0.0;
-    #pragma omp parallel
-    {
-        double partial_sum = 0.0;
-        #pragma omp for
-        for (long i = 0; i < n; i++) {
-            double term = (i % 2 == 0 ? 1.0 : -1.0) / (2 * i + 1);
-            partial_sum += term;
-        }
-        #pragma omp atomic
-        pi += partial_sum;
+    int i = 0;
+
+    #pragma omp parallel for private(i) reduction(+:pi)
+    for (i = 0; i < n; i++) {
+        pi += (i % 2 == 0 ? 1.0 : -1.0) / (2 * i + 1);;
     }
+    
     return 4.0 * pi;
 }
 
@@ -33,6 +28,7 @@ int main() {
     double start;
     double pi_sequential, pi_parallel;
     double elapsed_time, elapsed_time_parallel;
+
 
     start = omp_get_wtime();
     pi_sequential = calculate_pi_sequential(n);

@@ -20,6 +20,8 @@ int isLocalMax(int **A, int i, int j, int w) {
 }
 
 int main() {
+    int i = 0;
+    int j = 0;
     // Allocate memory dynamically for A and B
     int **A = (int **)malloc(ROWS * sizeof(int *));
     int **B = (int **)malloc(ROWS * sizeof(int *));
@@ -56,9 +58,9 @@ int main() {
     // Parallel version using OpenMP
     double start_time_parallel = omp_get_wtime();
 
-    #pragma omp parallel for collapse(2)
-    for (int i = w; i < ROWS - w; i++) {
-        for (int j = w; j < COLS - w; j++) {
+    #pragma omp parallel for collapse(2) private(i, j)
+    for (i = w; i < ROWS - w; i++) {
+        for (j = w; j < COLS - w; j++) {
             if (isLocalMax(A, i, j, w)) {
                 B_parallel[i][j] = A[i][j]; // Store the local maximum in B_parallel
             }

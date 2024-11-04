@@ -5,7 +5,7 @@
 
 int main(int argc, char* argv[]) {
     long N = 0;
-
+    int i = 0;
     srand(time(0));
 
     // 1.000.000.000 is a good number
@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
     double start_time_parallel = omp_get_wtime();
     long sum_parallel = 0;
     #pragma omp parallel for reduction(+:sum_parallel)
-    for (long i = 0; i < N; i++) {
+    for (i = 0; i < N; i++) {
         sum_parallel += A[i];
     }
     double end_time_parallel = omp_get_wtime();

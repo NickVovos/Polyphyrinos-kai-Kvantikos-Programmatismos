@@ -4,15 +4,17 @@
 
 int count_primes(int n, int chunk_size) {
     int counter = 0;
-
+    int prime = 1;
+    int d = 0;
+    int x = 0;
     // Count primes using dynamic scheduling with a specific chunk size
-    #pragma omp parallel for schedule(dynamic, chunk_size) reduction(+:counter)
-    for (int x = 1; x <= n; x++) {
-        int prime = 1;  // Assume x is prime initially
+    #pragma omp parallel for schedule(dynamic, chunk_size) private(x, prime, d)  reduction(+:counter)
+    for (x = 1; x <= n; x++) {
+        prime = 1;  // Assume x is prime initially
         if (x < 2) {
             prime = 0; // 0 and 1 are not prime numbers
         } else {
-            for (int d = 2; d <= sqrt(x); d++) {
+            for (d = 2; d <= sqrt(x); d++) {
                 if (x % d == 0) {
                     prime = 0; // Not prime
                     break;
